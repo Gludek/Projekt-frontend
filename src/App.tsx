@@ -1,35 +1,75 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { ApiClient, queryClient } from "./API/apiClient";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import Login from "./pages/User/Login/login";
+import { useTest } from "./API/hooks/useTest";
+import Register from "./pages/User/Register/Register";
+import UserList from "./pages/User/UserList/UserList";
+import TopBar from "./components/Table/shell/TopBar";
+import Edit from "./pages/User/User/Edit";
+import Show from "./pages/User/User/Show";
+import { useGetUser } from "./API/hooks/UserHooks";
+
+const Test = () => {
+  const query = useTest();
+  return <div>{query.isLoading ? "Loading...." : query.data?.message}</div>;
+};
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <TopBar></TopBar>,
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
+      },
+      {
+        path: "users",
+        children: [
+          { element: <UserList />, index: true },
+          {
+            path: ":id",
+            loader: ({ params }) => {
+              if (!params.id) return Promise.reject(new Error("No id"));
+              const id = parseInt(params.id);
+              return id;
+            },
+            element: <Show />,
+          },
+          {
+            path: "edit/:id",
+            loader: ({ params }) => {
+              if (!params.id) return Promise.reject(new Error("No id"));
+              const id = parseInt(params.id);
+              return id;
+            },
+            element: <Edit />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "/test",
+    element: <Test />,
+  },
+]);
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
