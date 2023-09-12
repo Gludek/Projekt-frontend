@@ -1,0 +1,56 @@
+.typography-h6,
+h6 {
+  /* Headings/Regular/Base/H6 */
+  font-size: 0.8rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.2rem */
+}
+.typography-h5,
+h5 {
+  /* Headings/Regular/Base/H5 */
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.5rem */
+}
+.typography-h4,
+h4 {
+  /* Headings/Regular/Base/H4 */
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.875rem */
+}
+.typography-h3,
+h3 {
+  /* Headings/Regular/Base/H3 */
+  font-size: 1.5625rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 2.34375rem */
+}
+.typography-h2,
+h2 {
+  /* Headings/Regular/Base/H2 */
+  font-size: 1.95313rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 2.92969rem */
+}
+.typography-h1,
+h1 {
+  /* Headings/Regular/Base/H1 */
+  font-size: 2.44144rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 3.66213rem */
+}
+a{
+  color: inherit;
+  text-decoration: none;
+  
+}
+a:hover{
+  text-decoration: underline;
+}

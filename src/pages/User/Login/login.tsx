@@ -31,8 +31,8 @@ function Login() {
       ...data,
     };
     ApiClient.login(user).then((res) => {
-      console.log(res);
-      if (res.status === 200) {
+      console.log(res, "res");
+      if (res.code === 200) {
         console.log(res.data);
         setError("Login successful");
         navigate("/");

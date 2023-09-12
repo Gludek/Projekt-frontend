@@ -5,19 +5,20 @@ import { createContext } from "react";
 
 export const queryClient = new QueryClient();
 export const userContextProvider = createContext<User | undefined>(undefined);
+export const axiosInstance = axios.create({
+  baseURL: "http://localhost:3001",
+});
 
 export class ApiClient {
   private static getToken() {
     return localStorage.getItem("token");
   }
   static async getTest() {
-    return axios
-      .get("http://localhost:3001/test", {})
-      .then((res) => console.log(res));
+    return axiosInstance.get("/test", {}).then((res) => console.log(res));
   }
   static async getTestAuth() {
-    return axios
-      .get("http://localhost:3001/test_auth", {
+    return axiosInstance
+      .get("/test_auth", {
         headers: {
           Authorization: this.getToken(),
         },
@@ -30,27 +31,29 @@ export class ApiClient {
   static async login(user: UserLogin) {
     queryClient.invalidateQueries({ queryKey: ["token_validity"] });
     queryClient.invalidateQueries({ queryKey: ["me"] });
-    return axios
-      .post("http://localhost:3001/login", { user })
-      .then((res) => {
-        if (res.status === 200) {
-          localStorage.setItem("token", res.headers.authorization);
-        }
-        return res;
-      })
-      .catch((err) => err.response);
+    const query = queryClient.fetchQuery({
+      queryKey: ["token_validity"],
+      queryFn: async () => {
+        const { data, headers } = await axiosInstance.post("/login", {
+          user,
+        });
+        localStorage.setItem("token", headers.authorization);
+        return data;
+      },
+    });
+    return query;
   }
 
   static async register(user: UserRegister) {
-    return axios
-      .post("http://localhost:3001/signup", { user })
+    return axiosInstance
+      .post("/signup", { user })
       .then((res) => res)
       .catch((err) => err.response);
   }
 
   static async me() {
-    return axios
-      .get("http://localhost:3001/me", {
+    return axiosInstance
+      .get("/me", {
         headers: {
           Authorization: this.getToken(),
         },
@@ -60,18 +63,26 @@ export class ApiClient {
   }
 
   static async logout() {
-    queryClient.invalidateQueries({ queryKey: ["token_validity"] });
-    queryClient.invalidateQueries({ queryKey: ["me"] });
+    const query = queryClient.fetchQuery({
+      queryKey: ["token_validity"],
+      queryFn: async () => {
+        const { data, headers } = await axiosInstance.delete("/logout", {
+          headers: {
+            Authorization: this.getToken(),
+          },
+        });
+        return data;
+      },
+    });
+    queryClient.removeQueries(["me"]);
+    queryClient.removeQueries(["token_validity"]);
     localStorage.removeItem("token");
-    return axios
-      .delete("http://localhost:3001/logout")
-      .then((res) => res)
-      .catch((err) => err.response);
+    return query;
   }
 
   static async getUsers(number?: number) {
-    return axios
-      .get(`http://localhost:3001/users${number ? `?number=${number}` : ""}`, {
+    return axiosInstance
+      .get(`/users${number ? `?number=${number}` : ""}`, {
         headers: {
           Authorization: this.getToken(),
         },
@@ -80,8 +91,8 @@ export class ApiClient {
       .catch((err) => err.response);
   }
   static async getUser(id: number) {
-    return axios
-      .get(`http://localhost:3001/users/${id}`, {
+    return axiosInstance
+      .get(`/users/${id}`, {
         headers: {
           Authorization: this.getToken(),
         },
@@ -90,8 +101,8 @@ export class ApiClient {
       .catch((err) => err.response);
   }
   static async updateUser(id: number, user: UserRegister) {
-    return axios.put(
-      `http://localhost:3001/users/${id}`,
+    return axiosInstance.put(
+      `/users/${id}`,
       { user },
       {
         headers: {
@@ -102,7 +113,7 @@ export class ApiClient {
   }
 
   static async deleteUser(id: number) {
-    return axios.delete(`http://localhost:3001/users/${id}`, {
+    return axiosInstance.delete(`/users/${id}`, {
       headers: {
         Authorization: this.getToken(),
       },
@@ -110,7 +121,7 @@ export class ApiClient {
   }
 
   static async getPermissions() {
-    return axios.get(`http://localhost:3001/permissions`, {
+    return axiosInstance.get(`/permissions`, {
       headers: {
         Authorization: this.getToken(),
       },
