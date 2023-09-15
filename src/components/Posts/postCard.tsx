@@ -43,7 +43,7 @@ const PostImage = styled.img<{ minified?: boolean }>`
   @media (max-width: 426px) {
     width: 100%;
   }
-  border: ${({ minified }) => (minified ? "none" : "1px solid")};
+  border: ${({ minified }) => (minified ? "none" : "2px solid")};
   border-color: ${({ theme }) => theme.colors.primary["600"]};
   border-radius: 0.9375rem;
 `;

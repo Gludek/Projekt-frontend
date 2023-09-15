@@ -27,11 +27,10 @@ const PostList = styled.div`
   gap: 20px;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   height: 100%;
   overflow: auto;
-  scrollbar-gutter: stable;
-  @media (max-width: 426px) {
+  @media (max-width: 682px) {
     padding-bottom: 10px;
   }
 `;

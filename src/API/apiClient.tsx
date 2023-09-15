@@ -4,7 +4,7 @@ import { User, UserLogin, UserRegister } from "./types/user";
 import { createContext } from "react";
 
 export const queryClient = new QueryClient();
-export const userContextProvider = createContext<User | undefined>(undefined);
+export const userContext = createContext<User | undefined>(undefined);
 export const axiosInstance = axios.create({
   baseURL: "http://localhost:3001",
 });
@@ -122,6 +122,13 @@ export class ApiClient {
 
   static async getPermissions() {
     return axiosInstance.get(`/permissions`, {
+      headers: {
+        Authorization: this.getToken(),
+      },
+    });
+  }
+  static async getServices() {
+    return axiosInstance.get(`/services`, {
       headers: {
         Authorization: this.getToken(),
       },

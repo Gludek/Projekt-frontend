@@ -16,6 +16,7 @@ import { mainTheme } from "./styles/theme";
 import Home from "./pages/Home/Home";
 import "./styles/typography.css";
 import Test from "./pages/Test";
+import Services from "./pages/Services/Services";
 // const Test = () => {
 //   const query = useTest();
 //   return <div>{query.isLoading ? "Loading...." : query.data?.message}</div>;
@@ -30,17 +31,21 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
+        path: "services",
+        element: <Services />,
       },
       {
         path: "users",
         children: [
           { element: <UserList />, index: true },
+          {
+            path: "login",
+            element: <Login />,
+          },
+          {
+            path: "register",
+            element: <Register />,
+          },
           {
             path: ":id",
             loader: ({ params }) => {
@@ -112,9 +117,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: ${(props) => props.theme.fontFamily} !important;
     color: ${(props) => props.theme.colors.primary["800"]};
 
-    overflow: auto;
     scrollbar-gutter: stable;
-    padding-right: 10px;
     
   }
   

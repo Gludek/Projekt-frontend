@@ -6,13 +6,13 @@ import {
 } from "@tanstack/react-table";
 import { User } from "../../API/types/user";
 import { useContext } from "react";
-import { ApiClient, userContextProvider } from "../../API/apiClient";
+import { ApiClient, userContext } from "../../API/apiClient";
 import { Link } from "react-router-dom";
 
 const columnHelper = createColumnHelper<User>();
 
 const Columns = () => {
-  const me = useContext(userContextProvider) as User;
+  const me = useContext(userContext) as User;
 
   const columns = [
     columnHelper.accessor((row) => row, {
@@ -63,7 +63,7 @@ const Columns = () => {
 };
 
 function Table({ data }: { data: User[] }) {
-  const me = useContext(userContextProvider) as User;
+  const me = useContext(userContext) as User;
   const columns = Columns();
   const table = useReactTable({
     data,
