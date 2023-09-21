@@ -1,13 +1,22 @@
 import styled from "styled-components";
 import image from "@assets/profileTest.avif";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import StyledLink from "../Utils/StyledLink";
+import { ApiClient, userContext } from "@/API/apiClient";
+import Button from "../Utils/StyledButton";
+import LoginModal from "../Modal/LoginModal";
+import { useLocation, useNavigate } from "react-router-dom";
+import LoggedOutModal from "../Modal/LoggedOutModal";
 const Body = styled.div<{ open?: boolean }>`
   display: flex;
   flex-direction: column;
   align-self: stretch;
   background-color: ${({ open, theme }) =>
     open ? theme.colors.light : "transparent"};
+  > a {
+    align-self: stretch;
+    height: 100%;
+  }
 `;
 const UserNameDisplay = styled.div`
   display: flex;
@@ -37,6 +46,7 @@ const Menu = styled.ul<{ open?: boolean }>`
   gap: 10px;
   background-color: ${({ theme }) => theme.colors.light};
   border-radius: 0 0 10px 10px;
+  padding-bottom: ${({ open }) => (open ? "10px" : "0")};
   z-index: 10;
   box-shadow: 0px 4px 4px 0px #cacae1;
   hr {
@@ -68,26 +78,59 @@ const MenuItem = styled.li`
 `;
 function UserBox() {
   const [isOpen, setIsOpen] = useState(false);
+  const { currentUser, login } = useContext(userContext);
+  const [loggedOut, setLoggedOut] = useState(currentUser ? false : false);
+  const path = useLocation();
+  const navigate = useNavigate();
+
   return (
     <Body
       onMouseLeave={() => setIsOpen(false)}
       open={isOpen}
-      onClick={() => setIsOpen(true)}
+      onClick={() => setIsOpen((prev) => !prev)}
     >
-      <UserNameDisplay>
-        <span>name</span>
-        <img src={image} />
-      </UserNameDisplay>
-      <Menu open={isOpen}>
-        <MenuItem>Profile</MenuItem>
-        <MenuItem>Settings</MenuItem>
-        <hr />
-        <MenuItem>
-          <StyledLink linkType="text" to="/users/logout">
-            Logout
-          </StyledLink>
-        </MenuItem>
-      </Menu>
+      {currentUser ? (
+        <>
+          <UserNameDisplay>
+            <span>{currentUser?.name}</span>
+            <img src={image} />
+          </UserNameDisplay>
+          <Menu open={isOpen}>
+            <MenuItem>Profile</MenuItem>
+            <MenuItem>Settings</MenuItem>
+            {currentUser?.permissions?.includes("admin") && (
+              <MenuItem>
+                <StyledLink linkType="text" to="/admin/dashboard">
+                  Admin Panel
+                </StyledLink>
+              </MenuItem>
+            )}
+            <hr />
+            <MenuItem>
+              <Button
+                buttonStyle="text"
+                onClick={() => {
+                  ApiClient.logout()
+                    .then((res) => {
+                      console.log(res);
+                      if (res.status == "ok") {
+                        setLoggedOut(true);
+                      }
+                    })
+                    .catch((e) => console.warn(e));
+                  login(null);
+                  path.pathname.includes("admin") && navigate("/");
+                }}
+              >
+                Logout
+              </Button>
+            </MenuItem>
+          </Menu>
+        </>
+      ) : (
+        <LoginModal />
+      )}
+      {loggedOut && <LoggedOutModal />}
     </Body>
   );
 }

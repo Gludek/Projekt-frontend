@@ -1,76 +1,91 @@
 import { ComponentProps } from "react";
-import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
 
-type $LinkTypes = "text" | "button";
-type LinkProps = ComponentProps<typeof Link> & {
-  linkStyle?: "primary" | "secondary" | "tertiary" | "nav";
-  linkType?: $LinkTypes;
+type ButtonStyles = "primary" | "secondary" | "tertiary" | "nav" | "text";
+type ButtonProps = ComponentProps<"button"> & {
+  buttonStyle?: ButtonStyles;
   outlined?: boolean;
 };
-type StyledLinkProps = ComponentProps<typeof Link> & {
-  $linkStyle?: "primary" | "secondary" | "tertiary" | "nav";
-  $linkType?: $LinkTypes;
+type StyleButtonProps = ComponentProps<"button"> & {
+  $buttonStyle?: ButtonStyles;
   $outlined?: boolean;
 };
-const SLink = styled(Link)<StyledLinkProps>`
+const StyledButton = styled.button<StyleButtonProps>`
+  font: inherit;
+
   --hover-background-color: var(--background-color);
-
-  ${({ theme, ...p }) => {
-    return colorHandler(p.$linkStyle || "primary");
-  }}
-  ${({ theme, ...p }) => {
-    return typeHandler(p.$linkType || "text");
-  }}
-  color: var(--text-color);
-  text-decoration: none;
-
+  ${({ $buttonStyle = "primary" }) => colorHandler($buttonStyle)}
   border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  padding: 10px;
+  height: 100%;
+  border: none;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  ${({ $buttonStyle }) => {
+    if ($buttonStyle == "text") {
+      return css`
+        background: transparent;
+        border: none;
+        color: var(--text-color);
+        padding: 0;
+      `;
+    }
+  }}
   ${({ $outlined }) =>
     $outlined &&
     css`
       background: transparent;
       border: 1px solid var(--background-color);
-      color: var(--text-color);
+      color: var(--background-color);
     `};
-  text-align: center;
   &:hover {
-    ${({ $linkType }) =>
-      $linkType == "button" &&
-      css`
-        text-decoration: none;
-        color: var(--hover-text-color);
-        background: var(--hover-background-color);
-      `};
-
+    text-decoration: none;
+    color: var(--hover-text-color);
+    background: var(--hover-background-color);
     transition: 0.3s ease-out;
+    ${({ $buttonStyle }) => {
+      if ($buttonStyle == "text") {
+        return css`
+          background: transparent;
+          color: var(--text-color);
+          text-decoration: underline;
+        `;
+      }
+    }}
   }
 `;
-function StyledLink({
-  linkType = "text",
-  linkStyle = "primary",
+
+function Button({
+  children,
+  buttonStyle = "primary",
+  onClick,
   outlined,
-  ...props
-}: LinkProps) {
+  type = "button",
+  ...rest
+}: ButtonProps) {
   return (
-    <SLink
-      $linkStyle={linkStyle}
+    <StyledButton
+      type={type}
+      $buttonStyle={buttonStyle}
       $outlined={outlined}
-      $linkType={linkType}
-      {...props}
-    />
+      onClick={onClick}
+      {...rest}
+    >
+      {children}
+    </StyledButton>
   );
 }
 
-export default StyledLink;
-
-export function colorHandler(style: string) {
+export default Button;
+function colorHandler(style: string) {
   switch (style) {
     case "primary":
       return css`
-        --text-color: ${({ theme }) => theme.colors.primary["800"]};
+        --text-color: ${({ theme }) => theme.colors.secondary["400"]};
         --background-color: ${({ theme }) => theme.colors.primary["500"]};
-        --hover-text-color: ${({ theme }) => theme.colors.secondary["200"]};
+        --hover-text-color: ${({ theme }) => theme.colors.secondary["600"]};
       `;
     case "secondary":
       return css`
@@ -103,23 +118,6 @@ export function colorHandler(style: string) {
         --text-color: ${({ theme }) => theme.colors.primary["800"]};
         --background-color: transparent;
         --hover-text-color: ${({ theme }) => theme.colors.primary["500"]};
-      `;
-  }
-}
-
-function typeHandler(type: $LinkTypes) {
-  switch (type) {
-    case "text":
-      return css`
-        padding: 0;
-        border: none;
-        background-color: transparent;
-      `;
-    case "button":
-      return css`
-        padding: 10px;
-        border: none;
-        background-color: var(--background-color);
       `;
   }
 }

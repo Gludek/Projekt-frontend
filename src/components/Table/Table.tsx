@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 const columnHelper = createColumnHelper<User>();
 
 const Columns = () => {
-  const me = useContext(userContext) as User;
+  const { currentUser } = useContext(userContext);
 
   const columns = [
     columnHelper.accessor((row) => row, {
@@ -37,8 +37,8 @@ const Columns = () => {
     }),
     columnHelper.accessor("id", {
       cell: (info) =>
-        me?.permissions.find((p) => p.name == "SuperAdmin") &&
-        me.id != info.getValue() ? (
+        currentUser?.permissions.find((p) => p.name == "SuperAdmin") &&
+        currentUser.id != info.getValue() ? (
           <>
             <button
               onClick={() => {
@@ -63,14 +63,14 @@ const Columns = () => {
 };
 
 function Table({ data }: { data: User[] }) {
-  const me = useContext(userContext) as User;
+  const { currentUser } = useContext(userContext);
   const columns = Columns();
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  console.log(me);
+  console.log(currentUser);
 
   return (
     <div className="p-2">
@@ -97,7 +97,7 @@ function Table({ data }: { data: User[] }) {
               key={row.id}
               style={{
                 background:
-                  me && me.email == row.renderValue("email")
+                  currentUser && currentUser.email == row.renderValue("email")
                     ? "red"
                     : "transparent",
               }}

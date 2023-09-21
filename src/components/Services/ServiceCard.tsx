@@ -76,7 +76,7 @@ const StyledButton = styled.button`
   }
 `;
 function ServiceCard({ service }: ServiceProps) {
-  const isLoggedIn = useContext(userContext);
+  const { currentUser } = useContext(userContext);
   return (
     <Service>
       <ServiceTitle>
@@ -91,12 +91,12 @@ function ServiceCard({ service }: ServiceProps) {
               e.stopPropagation();
             }}
           >
-            <StyledButton disabled={!isLoggedIn}>
-              {isLoggedIn
+            <StyledButton disabled={!currentUser}>
+              {currentUser
                 ? "Umów wizytę online"
                 : "Zaloguj się, aby umawiać wizyty online"}
             </StyledButton>
-            <StyledLink to="tel:+48609824011">
+            <StyledLink to="tel:+48609824011" linkType="button" outlined>
               Umów się telefonicznie
             </StyledLink>
           </div>

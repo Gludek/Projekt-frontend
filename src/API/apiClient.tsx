@@ -4,7 +4,10 @@ import { User, UserLogin, UserRegister } from "./types/user";
 import { createContext } from "react";
 
 export const queryClient = new QueryClient();
-export const userContext = createContext<User | undefined>(undefined);
+export const userContext = createContext<{
+  currentUser: User | null;
+  login: (res: any) => void;
+}>({ currentUser: null, login: () => {} });
 export const axiosInstance = axios.create({
   baseURL: "http://localhost:3001",
 });
@@ -66,7 +69,7 @@ export class ApiClient {
     const query = queryClient.fetchQuery({
       queryKey: ["token_validity"],
       queryFn: async () => {
-        const { data, headers } = await axiosInstance.delete("/logout", {
+        const { data } = await axiosInstance.delete("/logout", {
           headers: {
             Authorization: this.getToken(),
           },
@@ -74,21 +77,26 @@ export class ApiClient {
         return data;
       },
     });
-    queryClient.removeQueries(["me"]);
-    queryClient.removeQueries(["token_validity"]);
-    localStorage.removeItem("token");
     return query;
   }
 
   static async getUsers(number?: number) {
     return axiosInstance
-      .get(`/users${number ? `?number=${number}` : ""}`, {
+      .get<User[]>(`/users${number ? `?number=${number}` : ""}`, {
         headers: {
           Authorization: this.getToken(),
         },
       })
-      .then((res) => res)
-      .catch((err) => err.response);
+      .then((res) => res.data)
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          console.log("error message: ", error.message);
+          return error.message;
+        } else {
+          console.log("unexpected error: ", error);
+          return "An unexpected error occurred";
+        }
+      });
   }
   static async getUser(id: number) {
     return axiosInstance
