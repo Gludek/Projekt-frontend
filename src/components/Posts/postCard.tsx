@@ -7,17 +7,17 @@ type PostCardProps = PropsWithChildren & {
   img?: string;
   minified?: boolean;
 };
-const Body = styled.div<{ minified?: boolean }>`
+const Body = styled.div<{ $minified?: boolean }>`
   display: flex;
   position: relative;
-  gap: ${({ minified }) => (minified ? "0" : "2.5rem")};
+  gap: ${({ $minified }) => ($minified ? "0" : "2.5rem")};
   flex: 1;
   border-radius: 0.9375rem;
   background: ${({ theme }) => theme.colors.primary["200"]};
-  flex-direction: ${({ minified }) => (minified ? "column" : "row")};
+  flex-direction: ${({ $minified }) => ($minified ? "column" : "row")};
   padding: 1rem;
-  ${({ minified }) =>
-    minified &&
+  ${({ $minified }) =>
+    $minified &&
     css`
       &:has(img) {
         padding-top: 9rem;
@@ -29,10 +29,10 @@ const Body = styled.div<{ minified?: boolean }>`
     gap: 0;
   }
 `;
-const PostImage = styled.img<{ minified?: boolean }>`
+const PostImage = styled.img<{ $minified?: boolean }>`
   width: clamp(10rem, 20%, 20rem);
-  ${({ minified }) =>
-    minified &&
+  ${({ $minified }) =>
+    $minified &&
     css`
       position: absolute;
       top: 0;
@@ -43,11 +43,11 @@ const PostImage = styled.img<{ minified?: boolean }>`
   @media (max-width: 426px) {
     width: 100%;
   }
-  border: ${({ minified }) => (minified ? "none" : "2px solid")};
+  border: ${({ $minified }) => ($minified ? "none" : "2px solid")};
   border-color: ${({ theme }) => theme.colors.primary["600"]};
   border-radius: 0.9375rem;
 `;
-const PostBody = styled.div<{ minified?: boolean }>`
+const PostBody = styled.div<{ $minified?: boolean }>`
   z-index: 1;
   border-radius: 1rem;
   display: flex;
@@ -58,8 +58,8 @@ const PostBody = styled.div<{ minified?: boolean }>`
     transparent 0%,
     ${({ theme }) => theme.colors.primary["200"]} 10%
   );
-  ${({ minified }) =>
-    minified &&
+  ${({ $minified }) =>
+    $minified &&
     css`
       img ~ & {
         padding-top: 1rem;
@@ -73,11 +73,11 @@ const PostBody = styled.div<{ minified?: boolean }>`
 const PostTitle = styled.h3`
   color: ${({ theme }) => theme.colors.primary["500"]};
 `;
-const PostContent = styled.p<{ minified?: boolean }>`
+const PostContent = styled.p<{ $minified?: boolean }>`
   display: -webkit-box;
   width: 100%;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${({ minified }) => (minified ? "3" : "4")};
+  -webkit-line-clamp: ${({ $minified }) => ($minified ? "3" : "4")};
   height: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -101,15 +101,15 @@ function PostCard({
   ...rest
 }: PostCardProps) {
   return (
-    <Body minified={minified}>
+    <Body $minified={minified}>
       {img && (
-        <PostImage minified={minified} src={img} title={title + "image"} />
+        <PostImage $minified={minified} src={img} title={title + "image"} />
       )}
-      <PostBody minified={minified}>
+      <PostBody $minified={minified}>
         <PostTitle>{title}</PostTitle>
-        <PostContent minified={minified}>{children}</PostContent>
+        <PostContent $minified={minified}>{children}</PostContent>
         <PostFooter>
-          <StyledLink linkType="button" to="/post/1">
+          <StyledLink linkType="button" to="/post/1" outlined>
             Czytaj dalej...
           </StyledLink>
         </PostFooter>

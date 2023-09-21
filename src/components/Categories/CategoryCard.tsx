@@ -49,14 +49,15 @@ const CategoryBody = styled.div<{ isExpanded: boolean }>`
 `;
 type CategoryCardProps = {
   title: string;
+  closedByDefault?: boolean;
   services: {
     name: string;
     description: string;
     price: string;
   }[];
 };
-function CategoryCard({ title, services }: CategoryCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+function CategoryCard({ title, services, closedByDefault }: CategoryCardProps) {
+  const [isExpanded, setIsExpanded] = useState(closedByDefault ?? true);
   return (
     <Category
       data-expanded={isExpanded}

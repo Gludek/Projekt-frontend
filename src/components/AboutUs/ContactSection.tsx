@@ -107,7 +107,6 @@ function ContactSection() {
       <Map
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2423.8260826934197!2d14.64599957652256!3d52.59083627207985!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470773145cce7081%3A0xc95e95d78349168!2sSalon%20Kosmetyczny%20%22Sekret%20Pi%C4%99kna%22%20Aneta%20Nadbrze%C5%BCna!5e0!3m2!1sen!2spl!4v1694177105885!5m2!1sen!2spl"
         loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
       />
       <Info>
         <Address>
@@ -123,8 +122,7 @@ function ContactSection() {
             <StyledLink
               linkType="button"
               linkStyle="primary"
-              inversed
-              filled
+              outlined
               to="https://maps.google.com/maps/dir//Salon+Kosmetyczny+%22Sekret+Pi%C4%99kna%22+Aneta+Nadbrze%C5%BCna+Piastowska+8a+66-470+Kostrzyn+nad+Odr%C4%85/@52.5908363,14.6485745,16z/data=!4m5!4m4!1m0!1m2!1m1!1s0x470773145cce7081:0xc95e95d78349168"
             >
               Wyznacz trasę

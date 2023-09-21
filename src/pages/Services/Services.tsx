@@ -1,10 +1,8 @@
 import { useGetServices } from "../../API/hooks/ServiceHooks";
-import styled, { css } from "styled-components";
-import { useState } from "react";
+import styled from "styled-components";
 import CategoryCard from "../../components/Categories/CategoryCard";
 const Body = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: row;
   gap: 20px;

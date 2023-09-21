@@ -6,12 +6,10 @@ import ContactSection from "../../components/AboutUs/ContactSection";
 
 const Body = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   gap: 50px;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 `;
 const Section = styled.div`
   width: 100%;
@@ -23,7 +21,8 @@ const Section = styled.div`
 `;
 const PostList = styled.div`
   width: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   flex-direction: row;
   align-items: center;
