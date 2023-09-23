@@ -142,4 +142,12 @@ export class ApiClient {
       },
     });
   }
+
+  static async getPosts() {
+    return axiosInstance.get(`/posts`, {
+      headers: {
+        Authorization: this.getToken(),
+      },
+    });
+  }
 }

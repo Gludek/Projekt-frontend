@@ -13,6 +13,7 @@ import Services from "./pages/Services/Services";
 import Dashboard from "./pages/Admin/Dashboard";
 import UserList from "./pages/Admin/UserList";
 import Posts from "./pages/Posts/Posts";
+import NewPost from "./pages/Posts/NewPost";
 // const Test = () => {
 //   const query = useTest();
 //   return <div>{query.isLoading ? "Loading...." : query.data?.message}</div>;
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <Posts />,
+          },
+          {
+            path: "new",
+            element: <NewPost />,
           },
           {
             path: ":id",

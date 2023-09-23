@@ -38,7 +38,7 @@ const PostImage = styled.img<{ $minified?: boolean }>`
       top: 0;
       left: 0;
       width: 100%;
-      height: 50%;
+      height: 60%;
     `}
   @media (max-width: 426px) {
     width: 100%;
@@ -61,6 +61,9 @@ const PostBody = styled.div<{ $minified?: boolean }>`
   ${({ $minified }) =>
     $minified &&
     css`
+      border-top-right-radius: 0;
+      border-top-left-radius: 0;
+
       img ~ & {
         padding-top: 1rem;
         padding-inline: 1rem;

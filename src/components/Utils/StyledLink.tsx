@@ -68,9 +68,9 @@ export function colorHandler(style: string) {
   switch (style) {
     case "primary":
       return css`
-        --text-color: ${({ theme }) => theme.colors.primary["800"]};
+        --text-color: ${({ theme }) => theme.colors.primary["600"]};
         --background-color: ${({ theme }) => theme.colors.primary["500"]};
-        --hover-text-color: ${({ theme }) => theme.colors.secondary["200"]};
+        --hover-text-color: ${({ theme }) => theme.colors.secondary["500"]};
       `;
     case "secondary":
       return css`
