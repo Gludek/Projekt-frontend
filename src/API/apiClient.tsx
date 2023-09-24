@@ -10,6 +10,9 @@ export const userContext = createContext<{
 }>({ currentUser: null, login: () => {} });
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL as string,
+  headers: {
+    "ngrok-skip-browser-warning": "true",
+  },
 });
 
 export class ApiClient {
