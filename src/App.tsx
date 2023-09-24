@@ -1,6 +1,6 @@
 import "./App.css";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./API/apiClient";
+import { ApiClient, queryClient } from "./API/apiClient";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import TopBar from "./components/shell/TopBar";
@@ -70,6 +70,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  ApiClient.getURL();
   return (
     <>
       <ThemeProvider theme={mainTheme}>

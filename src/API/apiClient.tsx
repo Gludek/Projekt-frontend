@@ -9,10 +9,13 @@ export const userContext = createContext<{
   login: (res: any) => void;
 }>({ currentUser: null, login: () => {} });
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: import.meta.env.VITE_API_URL as string,
 });
 
 export class ApiClient {
+  static getURL() {
+    return axios.get("http://127.0.0.1:4040/api/tunnels");
+  }
   private static getToken() {
     return localStorage.getItem("token");
   }
