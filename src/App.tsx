@@ -14,6 +14,8 @@ import Dashboard from "./pages/Admin/Dashboard";
 import UserList from "./pages/Admin/UserList";
 import Posts from "./pages/Posts/Posts";
 import NewPost from "./pages/Posts/NewPost";
+import { useGetPost } from "./API/hooks/PostHooks";
+import SpecificPost, { loader as postLoader } from "./pages/Posts/SpecificPost";
 // const Test = () => {
 //   const query = useTest();
 //   return <div>{query.isLoading ? "Loading...." : query.data?.message}</div>;
@@ -44,7 +46,8 @@ const router = createBrowserRouter([
           },
           {
             path: ":id",
-            element: <div>post</div>,
+            loader: postLoader,
+            element: <SpecificPost />,
           },
         ],
       },
@@ -70,7 +73,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  ApiClient.getURL();
   return (
     <>
       <ThemeProvider theme={mainTheme}>

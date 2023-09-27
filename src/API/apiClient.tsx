@@ -16,9 +16,6 @@ export const axiosInstance = axios.create({
 });
 
 export class ApiClient {
-  static getURL() {
-    return axios.get("http://127.0.0.1:4040/api/tunnels");
-  }
   private static getToken() {
     return localStorage.getItem("token");
   }
@@ -149,11 +146,42 @@ export class ApiClient {
     });
   }
 
-  static async getPosts() {
+  static async getPosts(params?: getPostsParams) {
     return axiosInstance.get(`/posts`, {
+      headers: {
+        Authorization: this.getToken(),
+      },
+      params: params,
+    });
+  }
+  static async getPost(id: number) {
+    return axiosInstance.get(`/posts/${id}`, {
+      headers: {
+        Authorization: this.getToken(),
+      },
+    });
+  }
+  static async createPost(post: FormData) {
+    return axiosInstance.postForm(`/posts`, post, {
+      headers: {
+        Authorization: this.getToken(),
+      },
+    });
+  }
+
+  static async updatePost(id: number, post: FormData) {
+    return axiosInstance.putForm(`/posts/${id}`, post, {
+      headers: {
+        Authorization: this.getToken(),
+      },
+    });
+  }
+  static async getImages(limit?: number) {
+    return axiosInstance.get(`/images?limit=${limit}`, {
       headers: {
         Authorization: this.getToken(),
       },
     });
   }
 }
+export type getPostsParams = { limit?: number };

@@ -3,6 +3,7 @@ import { PropsWithChildren } from "react";
 import StyledLink from "../Utils/StyledLink";
 
 type PostCardProps = PropsWithChildren & {
+  postId: string;
   title: string;
   img?: string;
   minified?: boolean;
@@ -28,6 +29,8 @@ const Body = styled.div<{ $minified?: boolean }>`
     flex-direction: column;
     gap: 0;
   }
+  justify-content: center;
+  align-items: stretch;
 `;
 const PostImage = styled.img<{ $minified?: boolean }>`
   width: clamp(10rem, 20%, 20rem);
@@ -43,6 +46,7 @@ const PostImage = styled.img<{ $minified?: boolean }>`
   @media (max-width: 426px) {
     width: 100%;
   }
+  object-fit: cover;
   border: ${({ $minified }) => ($minified ? "none" : "2px solid")};
   border-color: ${({ theme }) => theme.colors.primary["600"]};
   border-radius: 0.9375rem;
@@ -100,9 +104,10 @@ function PostCard({
   minified = false,
   children,
   title,
+  postId,
   img,
-  ...rest
 }: PostCardProps) {
+  console.log(postId);
   return (
     <Body $minified={minified}>
       {img && (
@@ -110,9 +115,12 @@ function PostCard({
       )}
       <PostBody $minified={minified}>
         <PostTitle>{title}</PostTitle>
-        <PostContent $minified={minified}>{children}</PostContent>
+        <PostContent
+          $minified={minified}
+          dangerouslySetInnerHTML={{ __html: children as string }}
+        ></PostContent>
         <PostFooter>
-          <StyledLink linkType="button" to="/post/1" outlined>
+          <StyledLink linkType="button" to={`/posts/${postId}`} outlined>
             Czytaj dalej...
           </StyledLink>
         </PostFooter>

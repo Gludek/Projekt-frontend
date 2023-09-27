@@ -1,7 +1,6 @@
 import { EditorProvider, JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import styled from "styled-components";
-import RTIPrevie from "./RTIPrevie";
 import { Color } from "@tiptap/extension-color";
 import ListItem from "@tiptap/extension-list-item";
 import TextStyle from "@tiptap/extension-text-style";
@@ -9,34 +8,9 @@ import RTIMenuBar from "./RTIComponents/RTIMenuBar";
 import Placeholder from "@tiptap/extension-placeholder";
 import Typography from "@tiptap/extension-typography";
 import Document from "@tiptap/extension-document";
-const CustomDocument = Document.extend({
-  content: "heading block*",
-});
-const extensions = [
-  Color.configure({ types: [TextStyle.name, ListItem.name] }),
-  TextStyle.configure({ types: [ListItem.name] }),
-  CustomDocument,
-  StarterKit.configure({
-    document: false,
-  }),
-  Placeholder.configure({
-    placeholder: ({ node }) => {
-      console.log(
-        node,
-        node.attrs.level,
-        node.type.name,
-        node.type.name === "heading" && node.attrs.level === 1
-      );
-      if (node.type.name === "heading" && node.attrs.level === 1) {
-        return "Tytuł";
-      }
-
-      return "Treśc";
-    },
-  }),
-  ,
-  Typography,
-];
+import { useFormContext } from "react-hook-form";
+import Image from "@tiptap/extension-image";
+import { getBase64 } from "@/Utils/getBase64";
 
 const StyledEditor = styled.div`
   > div:nth-child(2) {
@@ -50,6 +24,10 @@ const StyledEditor = styled.div`
       border: none;
       outline: none;
     }
+    img {
+      max-width: 300px;
+      border-radius: 5px;
+    }
   }
   .tiptap .is-empty::before {
     color: #adb5bd;
@@ -59,15 +37,98 @@ const StyledEditor = styled.div`
     pointer-events: none;
   }
 `;
-function RichTextInput({ setOutput }: { setOutput: (a: JSONContent) => void }) {
+function RichTextInput({
+  description,
+  title,
+  onChange,
+}: {
+  description: string;
+  title: string;
+  onChange: (a: string) => void;
+}) {
+  const CustomDocument = Document.extend({
+    content: "heading block*",
+  });
+  const extensions = [
+    Color.configure({ types: [TextStyle.name, ListItem.name] }),
+    TextStyle.configure(),
+    CustomDocument,
+    Image.configure({
+      allowBase64: true,
+    }),
+    StarterKit.configure({
+      document: false,
+    }),
+    Placeholder.configure({
+      placeholder: ({ node }) => {
+        if (node.type.name === "heading" && node.attrs.level === 1) {
+          return "Tytuł";
+        }
+
+        return "Treśc";
+      },
+      includeChildren: false,
+    }),
+    Typography,
+  ];
+  const content = title ?? "" + description ?? "";
+  const { setValue, getValues } = useFormContext();
   return (
     <StyledEditor>
       <EditorProvider
         extensions={extensions}
+        editorProps={{
+          handleDrop: (view, event, slice, moved) => {
+            if (
+              !moved &&
+              event.dataTransfer &&
+              event.dataTransfer.files &&
+              event.dataTransfer.files[0]
+            ) {
+              const image = event.dataTransfer.files[0];
+              // if dropping external files
+              const pic = getValues("picture");
+              if (pic) {
+                if (Array.isArray(pic)) {
+                  if (pic.length > 0) {
+                    setValue("picture", image);
+                  } else {
+                    setValue("picture", [...pic, image]);
+                  }
+                } else {
+                  setValue("picture", [pic, image]);
+                }
+              } else {
+                setValue("picture", image);
+              }
+
+              getBase64(image).then((res) => {
+                const { schema } = view.state;
+                const coordinates = view.posAtCoords({
+                  left: event.clientX,
+                  top: event.clientY,
+                });
+                console.log(coordinates, "coordinates");
+                const node = schema.nodes.image.create({
+                  src: res,
+                }); // creates the image element
+                const transaction = view.state.tr.insert(
+                  coordinates?.pos,
+                  node
+                ); // places it in the correct position
+                console.log(transaction, "transaction");
+                console.log(view.dispatch(transaction));
+              });
+              return true; // handled
+            }
+            return false;
+          },
+        }}
+        content={content}
         slotBefore={<RTIMenuBar />}
-        onUpdate={({ editor }) => setOutput(editor.getHTML())}
+        onUpdate={({ editor }) => onChange(editor.getHTML())}
       >
-        <RTIPrevie />
+        test
       </EditorProvider>
     </StyledEditor>
   );

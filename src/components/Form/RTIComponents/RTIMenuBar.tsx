@@ -1,6 +1,8 @@
 import { useCurrentEditor } from "@tiptap/react";
 import React, { useEffect, useRef } from "react";
+import { useFormContext } from "react-hook-form";
 import styled from "styled-components";
+import Test from "../../../pages/Test";
 
 const MenuBar = styled.div`
   display: flex;
@@ -64,6 +66,8 @@ function RTIMenuBar() {
     const val = selectValue();
     selectRef.current.value = val;
   }, [editor.state.selection.$from.node()]);
+  const { register } = useFormContext();
+
   return (
     <MenuBar>
       {
@@ -165,6 +169,7 @@ function RTIMenuBar() {
       >
         redo
       </button>
+
       {/* <button
         onClick={() => editor.chain().focus().setColor("#958DF1").run()}
         className={

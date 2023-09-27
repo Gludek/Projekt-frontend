@@ -2,9 +2,7 @@ import PostCard from "@/components/Posts/postCard";
 import styled from "styled-components";
 import { useContext } from "react";
 import { userContext } from "@/API/apiClient";
-import Button from "@/components/Utils/StyledButton";
 import { useGetPosts } from "@/API/hooks/PostHooks";
-import TitledModal from "@/components/Modal/TitledModal";
 import StyledLink from "@/components/Utils/StyledLink";
 
 const Body = styled.div`
@@ -33,8 +31,19 @@ const ControlRow = styled.div`
 function Posts() {
   const postsQuery = useGetPosts();
   const posts = postsQuery.data?.data ?? [];
-  const firstPost = posts.shift();
+  if (postsQuery.isLoading) return <div>Loading...</div>;
+  posts.map((post) => {
+    let desc = post.description;
+    post.pictures.forEach((_pic: string, i: number) => {
+      desc = desc.replace(`{img:${i}}`, ``);
+    });
+    post.description = desc;
+    return post;
+  });
+  const firstPost = posts[0];
+  const postList = posts.slice(1, posts.length);
   const { currentUser } = useContext(userContext);
+  console.log(posts);
   return (
     <Body>
       <h1>Artykuły</h1>
@@ -46,19 +55,24 @@ function Posts() {
         </ControlRow>
       )}
       {firstPost && (
-        <PostCard title={firstPost.title} img={firstPost.picture}>
+        <PostCard
+          postId={firstPost.id}
+          title={firstPost.title}
+          img={firstPost.pictures[0]}
+        >
           {firstPost.description}
         </PostCard>
       )}
       <PostList>
-        {posts.map((post) => {
+        {postList.map((post) => {
           return (
             post && (
               <PostCard
                 minified
+                postId={post.id}
                 key={post.id}
                 title={post.title}
-                img={post.picture}
+                img={post.pictures[0]}
               >
                 {post.description}
               </PostCard>

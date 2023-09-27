@@ -3,6 +3,8 @@ import PostCard from "../../components/Posts/postCard";
 import { Link } from "react-router-dom";
 import ImageCard from "../../components/Image/ImageCard";
 import ContactSection from "../../components/AboutUs/ContactSection";
+import { useGetPosts } from "@/API/hooks/PostHooks";
+import { useGetImages } from "@/API/hooks/GalleryHooks";
 
 const Body = styled.div`
   width: 100%;
@@ -25,7 +27,6 @@ const PostList = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   flex-direction: row;
-  align-items: center;
   justify-content: center;
   height: 100%;
   overflow: auto;
@@ -39,6 +40,7 @@ const GalleryList = styled.div`
   justify-content: center;
   height: 30rem;
   flex: 1;
+
   > * {
     flex: 1;
     flex-basis: auto;
@@ -52,97 +54,73 @@ const GalleryList = styled.div`
   gap: 20px;
 `;
 function Home() {
+  const postQuery = useGetPosts({ limit: 5 });
+  const posts = postQuery.data?.data ?? [];
+  posts.map((post) => {
+    let desc = post.description;
+    post.pictures.forEach((_pic: string, i: number) => {
+      desc = desc.replace(`{img:${i}}`, ``);
+    });
+    post.description = desc;
+    return post;
+  });
+  const firstPost = posts[0];
+  const postList = posts.slice(1, posts.length);
+  const imageQuery = useGetImages(8);
+  const images = imageQuery.data?.data ?? [];
+  console.log(images);
   return (
     <Body>
       <h1>Salon Kosmetyczny "Sekret Piękna" Aneta Nadbrzeżna</h1>
       <Section>
         <h2>Artykuły</h2>
-        <PostCard
-          title={"Test"}
-          img={
-            "https://images.unsplash.com/photo-1693508171201-95c6ac806960?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-          }
-        >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis sit
-          enim quam cum illum, incidunt porro consequuntur! Cum neque earum
-          architecto molestiae amet provident explicabo! Debitis molestias quas
-          ipsum iusto. Enim dolorem sunt praesentium ullam amet corrupti hic
-          tenetur reiciendis aperiam nesciunt fuga, ex accusamus? Deserunt
-          labore vel, quis sint impedit ut odit excepturi molestias sunt minima
-          aliquam animi eos. Obcaecati, aut quos pariatur voluptatum eligendi
-          labore, vel minus animi culpa, dolor delectus ipsa unde! Beatae, cum
-          voluptatibus sit iste quos corporis molestias eligendi error ea eos
-          illum, aut provident!
-        </PostCard>
-        <PostList>
-          <PostCard
-            minified
-            title={"Test"}
-            img={
-              "https://images.unsplash.com/photo-1693508171201-95c6ac806960?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-            }
-          >
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis sit
-            enim quam cum illum, incidunt porro consequuntur! Cum neque earum
-            architecto molestiae amet provident explicabo! Debitis molestias
-            quas ipsum iusto. Enim dolorem sunt praesentium ullam amet corrupti
-            hic tenetur reiciendis aperiam nesciunt fuga, ex accusamus? Deserunt
-            labore vel, quis sint impedit ut odit excepturi molestias sunt
-            minima aliquam animi eos. Obcaecati, aut quos pariatur voluptatum
-            eligendi labore, vel minus animi culpa, dolor delectus ipsa unde!
-            Beatae, cum voluptatibus sit iste quos corporis molestias eligendi
-            error ea eos illum, aut provident!
-          </PostCard>
-          <PostCard minified title={"Test"}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis sit
-            enim quam cum illum, incidunt porro consequuntur! Cum neque earum
-            architecto molestiae amet provident explicabo! Debitis molestias
-            quas ipsum iusto. Enim dolorem sunt praesentium ullam amet corrupti
-            hic tenetur reiciendis aperiam nesciunt fuga, ex accusamus? Deserunt
-            labore vel, quis sint impedit ut odit excepturi molestias sunt
-            minima aliquam animi eos. Obcaecati, aut quos pariatur voluptatum
-            eligendi labore, vel minus animi culpa, dolor delectus ipsa unde!
-            Beatae, cum voluptatibus sit iste quos corporis molestias eligendi
-            error ea eos illum, aut provident!
-          </PostCard>
-          <PostCard minified title={"Test"}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis sit
-            enim quam cum illum, incidunt porro consequuntur! Cum neque earum
-            architecto molestiae amet provident explicabo! Debitis molestias
-            quas ipsum iusto. Enim dolorem sunt praesentium ullam amet corrupti
-            hic tenetur reiciendis aperiam nesciunt fuga, ex accusamus? Deserunt
-            labore vel, quis sint impedit ut odit excepturi molestias sunt
-            minima aliquam animi eos. Obcaecati, aut quos pariatur voluptatum
-            eligendi labore, vel minus animi culpa, dolor delectus ipsa unde!
-            Beatae, cum voluptatibus sit iste quos corporis molestias eligendi
-            error ea eos illum, aut provident!
-          </PostCard>
-          <PostCard minified title={"Test"}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis sit
-            enim quam cum illum, incidunt porro consequuntur! Cum neque earum
-            architecto molestiae amet provident explicabo! Debitis molestias
-            quas ipsum iusto. Enim dolorem sunt praesentium ullam amet corrupti
-            hic tenetur reiciendis aperiam nesciunt fuga, ex accusamus? Deserunt
-            labore vel, quis sint impedit ut odit excepturi molestias sunt
-            minima aliquam animi eos. Obcaecati, aut quos pariatur voluptatum
-            eligendi labore, vel minus animi culpa, dolor delectus ipsa unde!
-            Beatae, cum voluptatibus sit iste quos corporis molestias eligendi
-            error ea eos illum, aut provident!
-          </PostCard>
-        </PostList>
-        <Link to="/posts">Zobacz wszystkie</Link>
+        {postQuery.isLoading ? (
+          <div>Loading...</div>
+        ) : posts.length > 0 ? (
+          <>
+            <PostCard
+              postId={firstPost.id}
+              title={firstPost.title}
+              img={firstPost.pictures[0]}
+            >
+              {firstPost.description}
+            </PostCard>
+
+            <PostList>
+              {postList.map((post) => {
+                return (
+                  post && (
+                    <PostCard
+                      minified
+                      postId={post.id}
+                      key={post.id}
+                      title={post.title}
+                      img={post.pictures[0]}
+                    >
+                      {post.description}
+                    </PostCard>
+                  )
+                );
+              })}
+            </PostList>
+            <Link to="/posts">Zobacz wszystkie</Link>
+          </>
+        ) : (
+          <div>Brak artykułów</div>
+        )}
       </Section>
       <Section>
         <h2>Galeria</h2>
         <GalleryList>
-          <ImageCard />
-          <ImageCard />
-          <ImageCard />
-          <ImageCard />
-          <ImageCard />
-          <ImageCard />
-          <ImageCard />
-          <ImageCard />
+          {imageQuery.isLoading ? (
+            <div>Loading...</div>
+          ) : images.length > 0 ? (
+            images.map((image) => {
+              return image && <ImageCard key={image.id} img={image.url} />;
+            })
+          ) : (
+            <div>Brak zdjęć</div>
+          )}
         </GalleryList>
       </Section>
       <Section>

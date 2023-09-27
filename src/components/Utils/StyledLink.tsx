@@ -31,7 +31,7 @@ const SLink = styled(Link)<StyledLinkProps>`
     css`
       background: transparent;
       border: 1px solid var(--background-color);
-      color: var(--text-color);
+      color: var(--background-color);
     `};
   text-align: center;
   &:hover {
@@ -68,7 +68,7 @@ export function colorHandler(style: string) {
   switch (style) {
     case "primary":
       return css`
-        --text-color: ${({ theme }) => theme.colors.primary["600"]};
+        --text-color: ${({ theme }) => theme.colors.secondary["400"]};
         --background-color: ${({ theme }) => theme.colors.primary["500"]};
         --hover-text-color: ${({ theme }) => theme.colors.secondary["500"]};
       `;
