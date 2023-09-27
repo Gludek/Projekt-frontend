@@ -9,8 +9,9 @@ import {
   getExpandedRowModel,
 } from "@tanstack/react-table";
 import styled from "styled-components";
-import { Fragment } from "react";
+import { Fragment, MouseEventHandler } from "react";
 import chevron from "@/assets/chevron.svg";
+import { ApiClient } from "@/API/apiClient";
 const Body = styled.div`
   display: flex;
   flex-direction: column;
@@ -51,16 +52,33 @@ const Cell = styled.td`
 const PermissionContainer = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
   gap: 5px;
 `;
-const PermissionChip = styled.span`
+const PermissionChip = styled.span<{
+  key: string | number;
+  onClick: (e: MouseEventHandler) => void;
+}>`
   display: inline-flex;
   align-items: center;
   padding: 5px;
   background-color: ${({ theme }) => theme.colors.secondary["400"]};
   border-radius: 10px;
   color: ${({ theme }) => theme.colors.primary["600"]};
+  gap: 5px;
+  &:hover {
+    cursor: pointer;
+    background-color: ${({ theme }) => theme.colors.secondary["500"]};
+    font-weight: 600;
+  }
+  button {
+    background-color: transparent;
+    border: none;
+    color: ${({ theme }) => theme.colors.primary["600"]};
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    font-weight: inherit;
+  }
 `;
 const StyledButton = styled.button`
   background-color: transparent;
@@ -76,40 +94,57 @@ const Img = styled.img<{ open: boolean }>`
   transition: 0.2s;
 `;
 const columnHelper = createColumnHelper<User>();
-
+const CellR = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 20px;
+  width: 100%;
+`;
 const columns = [
-  {
-    id: "expander",
-    header: () => null,
-    cell: ({ row }) => {
-      return row.getCanExpand() ? (
-        <StyledButton
-          {...{
-            onClick: row.getToggleExpandedHandler(),
-            style: { cursor: "pointer" },
-          }}
-        >
-          <Img src={chevron} open={row.getIsExpanded()} />
-        </StyledButton>
-      ) : (
-        "🔵"
+  columnHelper.accessor("name", {
+    cell: ({ row, getValue }) => {
+      return (
+        <CellR key={getValue()}>
+          {row.getCanExpand() ? (
+            <StyledButton
+              {...{
+                onClick: row.getToggleExpandedHandler(),
+                style: { cursor: "pointer" },
+              }}
+            >
+              <Img src={chevron} open={row.getIsExpanded()} />
+            </StyledButton>
+          ) : (
+            "-"
+          )}
+          {" " + getValue()}
+        </CellR>
       );
     },
-  },
-  columnHelper.accessor("name", {
-    cell: (info) => info.getValue(),
   }),
   columnHelper.accessor((row) => row.email, {
     id: "lastName",
     cell: (info) => <i>{info.getValue()}</i>,
     header: () => <span>Email</span>,
   }),
-  columnHelper.accessor((u) => u.permissions, {
+  columnHelper.accessor((user) => user.permissions, {
     id: "permissions",
     cell: (info) => (
       <PermissionContainer>
-        {info.getValue()?.map((v) => (
-          <PermissionChip>{v}</PermissionChip>
+        {info.getValue()?.map((v, i) => (
+          <PermissionChip
+            key={v[0] + i}
+            onClick={(e) => {
+              if (v == "user") return;
+              const user = info.row.original;
+              user.permissions = user.permissions?.filter((p) => p !== v);
+              ApiClient.updateUser(user.id, user);
+            }}
+          >
+            {v}
+            {v != "user" && <span>&times;</span>}
+          </PermissionChip>
         ))}
       </PermissionContainer>
     ),

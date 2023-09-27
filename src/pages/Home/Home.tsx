@@ -58,10 +58,13 @@ function Home() {
   const posts = postQuery.data?.data ?? [];
   posts.map((post) => {
     let desc = post.description;
+    console.log(desc);
     post.pictures.forEach((_pic: string, i: number) => {
-      desc = desc.replace(`{img:${i}}`, ``);
+      desc = desc.replace(`</p>{img:${i}}<p>`, ``);
     });
+    desc.replace("<p></p>", "");
     post.description = desc;
+    console.log(desc);
     return post;
   });
   const firstPost = posts[0];

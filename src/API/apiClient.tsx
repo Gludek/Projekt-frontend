@@ -111,10 +111,17 @@ export class ApiClient {
       .then((res) => res)
       .catch((err) => err.response);
   }
-  static async updateUser(id: number, user: UserRegister) {
+  static async updateUser(id: number, user: User) {
+    const userUpdate = { ...user };
+    delete userUpdate.confirmed_at;
+    delete userUpdate.failed_attempts;
+    delete userUpdate.locked_at;
+    delete userUpdate.created_at;
+    delete userUpdate.updated_at;
+    delete userUpdate.active;
     return axiosInstance.put(
       `/users/${id}`,
-      { user },
+      { user: userUpdate },
       {
         headers: {
           Authorization: this.getToken(),

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ApiClient } from "../apiClient";
 import { User, UserLogin, UserRegister } from "../types/user";
 
@@ -31,9 +31,17 @@ export const useGetUsers = (number?: number) => {
 
 export const useGetUser = (id: number) => {
   const query = useQuery({
-    queryKey: ["user", id],
+    queryKey: ["users", id],
     queryFn: () => ApiClient.getUser(id),
   });
   console.log(query.data?.data);
   return query;
+};
+
+export const useUpdateUser = () => {
+  const mutation = useMutation({
+    mutationKey: ["users"],
+    mutationFn: (user: FormData) => ApiClient.updateUser(user),
+  });
+  return mutation;
 };

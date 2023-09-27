@@ -84,7 +84,7 @@ const PostContent = styled.p<{ $minified?: boolean }>`
   display: -webkit-box;
   width: 100%;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${({ $minified }) => ($minified ? "3" : "4")};
+  -webkit-line-clamp: ${({ $minified }) => ($minified ? "4" : "5")};
   height: 100%;
   overflow: hidden;
   text-overflow: ellipsis;

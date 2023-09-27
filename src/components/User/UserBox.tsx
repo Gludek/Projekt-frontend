@@ -100,7 +100,11 @@ function UserBox() {
             <MenuItem>Settings</MenuItem>
             {currentUser?.permissions?.includes("admin") && (
               <MenuItem>
-                <StyledLink linkType="text" to="/admin/dashboard">
+                <StyledLink
+                  linkStyle="nav"
+                  linkType="text"
+                  to="/admin/dashboard"
+                >
                   Admin Panel
                 </StyledLink>
               </MenuItem>
