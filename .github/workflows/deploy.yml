@@ -1,0 +1,19 @@
+name: deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["master"]
+
+jobs:
+  build:
+    runs-on: [self-hosted, deploy]
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and deploy
+        shell: bash
+        run: |
+          npm ci
+          npx vite build
+          sudo /usr/bin/cp -r ./dist/* /var/www/html/
