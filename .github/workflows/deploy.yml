@@ -16,4 +16,5 @@ jobs:
         run: |
           npm ci
           npm run build-without-tsc
+          sudo rm -rf /var/www/html/*
           sudo /usr/bin/cp -r ./dist/* /var/www/html/
