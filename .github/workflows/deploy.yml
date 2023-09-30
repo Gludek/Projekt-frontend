@@ -19,3 +19,4 @@ jobs:
           npm run build-without-tsc
           sudo rm -rf /var/www/html/*
           sudo /usr/bin/cp -r ./dist/* /var/www/html/
+          sudo systemctl restart rails
