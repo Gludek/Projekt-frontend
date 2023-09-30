@@ -129,7 +129,16 @@ export class ApiClient {
       }
     );
   }
-
+  static async confirmRegistration(confirmationToken: string) {
+    return axiosInstance
+      .get("/confirmation", {
+        params: {
+          confirmation_token: confirmationToken,
+        },
+      })
+      .then((res) => res)
+      .catch((err) => err.response);
+  }
   static async deleteUser(id: number) {
     return axiosInstance.delete(`/users/${id}`, {
       headers: {
