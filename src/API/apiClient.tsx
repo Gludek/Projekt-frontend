@@ -133,7 +133,10 @@ export class ApiClient {
           confirmation_token: confirmationToken,
         },
       })
-      .then((res) => res)
+      .then((res) => {
+        console.log(res, "res");
+        return res;
+      })
       .catch((err) => err.response);
   }
   static async deleteUser(id: number) {
