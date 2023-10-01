@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import PostCard from "../../components/Posts/postCard";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ImageCard from "../../components/Image/ImageCard";
 import ContactSection from "../../components/AboutUs/ContactSection";
 import { useGetPosts } from "@/API/hooks/PostHooks";
@@ -54,6 +54,8 @@ const GalleryList = styled.div`
   gap: 20px;
 `;
 function Home() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  console.log(searchParams.get("page"));
   const postQuery = useGetPosts({ limit: 5 });
   const posts = postQuery.data?.data ?? [];
   console.log(posts);
