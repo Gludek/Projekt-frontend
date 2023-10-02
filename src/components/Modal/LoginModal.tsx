@@ -13,6 +13,7 @@ import {
   userRegisterSchema,
 } from "@/API/types/user";
 import { useContext, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const Body = styled.div`
   min-width: 400px;
@@ -35,13 +36,19 @@ const FormRow = styled.div`
   justify-content: space-between;
   width: 100%;
 `;
-
+const Confirmed = styled.div<{ confirmed?: boolean }>`
+  border-radius: 10px;
+  color: ${({ confirmed }) => (confirmed ? "green" : "red")};
+`;
 function LoginModal({ text = "Zaloguj się" }: { text?: string }) {
   const [LRswitch, setLRswitch] = useState<"login" | "register">("login");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const confirmed = searchParams.get("confirmed");
   return (
     <Dialog
       modalId="login-modal"
       opener={<Button buttonStyle="nav">{text}</Button>}
+      defaultOpen={confirmed == "true" || confirmed == "false"}
     >
       {(props) => {
         return (
@@ -79,6 +86,15 @@ function LoginForm({
     resolver: zodResolver(userLoginSchema),
   });
   const { login: loginFn } = useContext(userContext);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const confirmed = searchParams.get("confirmed");
+  const confirmedEmail = () => {
+    if (confirmed == "true") {
+      return "Twoje konto zostało aktywowane";
+    } else if (confirmed == "false") {
+      return "Twoje konto nie zostało aktywowane";
+    }
+  };
   const onSubmit = (data: UserLogin) => {
     return ApiClient.login(data)
       .then((res) => {
@@ -100,6 +116,11 @@ function LoginForm({
   return (
     <>
       <h3>Login</h3>
+      {(confirmed == "true" || confirmed == "false") && (
+        <Confirmed confirmed={confirmed == "true"}>
+          {confirmedEmail()}
+        </Confirmed>
+      )}
       <Form onSubmit={handleSubmit(onSubmit)} name="loginForm" method="get">
         <Input
           type="email"
