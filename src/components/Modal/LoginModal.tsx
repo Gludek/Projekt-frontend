@@ -42,7 +42,7 @@ const Confirmed = styled.div<{ confirmed?: boolean }>`
 `;
 function LoginModal({ text = "Zaloguj się" }: { text?: string }) {
   const [LRswitch, setLRswitch] = useState<"login" | "register">("login");
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _setSearchParams] = useSearchParams();
   const confirmed = searchParams.get("confirmed");
   return (
     <Dialog
@@ -86,7 +86,7 @@ function LoginForm({
     resolver: zodResolver(userLoginSchema),
   });
   const { login: loginFn } = useContext(userContext);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _setSearchParams] = useSearchParams();
   const confirmed = searchParams.get("confirmed");
   const confirmedEmail = () => {
     if (confirmed == "true") {
@@ -107,9 +107,9 @@ function LoginForm({
           });
         }
       })
-      .catch((err) => {
-        setError("email", { message: "Niepoprawny email lub hasło" });
-        setError("password", { message: "Niepoprawny email lub hasło" });
+      .catch((_err) => {
+        setError("email", { message: _err.response.data });
+        setError("password", { message: _err.response.data });
         return false;
       });
   };
@@ -192,7 +192,8 @@ function RegisterForm({
     resolver: zodResolver(userRegisterSchema),
   });
   const { login } = useContext(userContext);
-  const [searchParams, setSearchParams] = useSearchParams();
+  //@ts-ignore
+  const _SearchParams = useSearchParams();
   const onSubmit = (data: UserRegister) => {
     return ApiClient.register(data)
       .then((res) => {
@@ -206,8 +207,8 @@ function RegisterForm({
         }
       })
       .catch((err) => {
-        setError("email", { message: "Niepoprawny email lub hasło" });
-        setError("password", { message: "Niepoprawny email lub hasło" });
+        setError("email", { message: err.response.data });
+        setError("password", { message: err.response.data });
         return false;
       });
   };
