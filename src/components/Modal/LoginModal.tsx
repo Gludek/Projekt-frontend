@@ -192,6 +192,7 @@ function RegisterForm({
     resolver: zodResolver(userRegisterSchema),
   });
   const { login } = useContext(userContext);
+  const [searchParams, setSearchParams] = useSearchParams();
   const onSubmit = (data: UserRegister) => {
     return ApiClient.register(data)
       .then((res) => {
