@@ -61,6 +61,7 @@ function SpecificPost() {
     )
   );
 }
+
 export const loader = async ({ params }: { params: { id: number } }) => {
   queryClient.prefetchQuery(["post", params.id], () => {
     return ApiClient.getPost(params.id);
