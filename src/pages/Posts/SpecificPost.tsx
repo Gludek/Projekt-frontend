@@ -33,10 +33,8 @@ const PostBody = styled.div`
 `;
 function SpecificPost() {
   const data = useLoaderData() as { id: number };
-  console.log(data);
   const postQuery = useGetPost(data.id);
   const post = postQuery.data?.data;
-  console.log(post);
   let postContent = post?.description;
   for (let p in post?.pictures) {
     postContent = postContent.replace(

@@ -1,8 +1,8 @@
 import TimedDialog from "./TimedDialog";
 import styled from "styled-components";
 import Button from "../Utils/StyledButton";
-import { Ref, useEffect, useRef } from "react";
-import LoginModal from "./LoginModal";
+import { Ref, useContext, useEffect, useRef } from "react";
+import { userContext } from "@/API/apiClient";
 const Body = styled.div`
   min-width: 400px;
   max-width: 60vw;
@@ -26,10 +26,8 @@ const Row = styled.div`
 `;
 function LoggedOutModal() {
   const ref = useRef<HTMLDialogElement>(null);
-  console.log(ref.current);
-  if (ref.current) {
-    console.log(ref.current.parentElement);
-  }
+  const { login: logout } = useContext(userContext);
+
   useEffect(() => {
     if (ref.current) {
       ref.current.showModal();
@@ -51,8 +49,9 @@ function LoggedOutModal() {
                     const loginModal = document.getElementById(
                       "login-modal"
                     ) as HTMLDialogElement;
-                    console.log(loginModal);
                     loginModal.showModal();
+                    logout(null);
+                    // sessionStorage.removeItem("token");
                     ref.current.close();
                   }
                 }}

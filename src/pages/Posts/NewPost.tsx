@@ -39,7 +39,6 @@ function NewPost() {
       // console.log(desc.match(`<img src="${base64}" />`));
       desc = desc.replace(`<img src="${base64}">`, `{img:${i}}`);
     }
-    console.log(title, desc, pictures);
     const post = new FormData();
     post.append("post[title]", title);
     post.append("post[description]", desc);

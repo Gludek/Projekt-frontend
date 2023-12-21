@@ -56,23 +56,19 @@ const GalleryList = styled.div`
 function Home() {
   const postQuery = useGetPosts({ limit: 5 });
   const posts = postQuery.data?.data ?? [];
-  console.log(posts);
   posts?.map((post) => {
     let desc = post.description;
-    console.log(desc);
     post.pictures.forEach((_pic: string, i: number) => {
       desc = desc.replace(`</p>{img:${i}}<p>`, ``);
     });
     desc.replace("<p></p>", "");
     post.description = desc;
-    console.log(desc);
     return post;
   });
   const firstPost = posts[0];
   const postList = posts.slice(1, posts.length);
   const imageQuery = useGetImages(8);
   const images = imageQuery.data?.data ?? [];
-  console.log(images);
   return (
     <Body>
       <h1>Salon Kosmetyczny "Sekret Piękna" Aneta Nadbrzeżna</h1>
@@ -80,7 +76,7 @@ function Home() {
         <h2>Artykuły</h2>
         {postQuery.isLoading ? (
           <div>Loading...</div>
-        ) : posts.length > 0 ? (
+        ) : posts.length > 0 && postQuery.isSuccess ? (
           <>
             <PostCard
               postId={firstPost.id}

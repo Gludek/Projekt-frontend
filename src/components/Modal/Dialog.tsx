@@ -12,12 +12,17 @@ import styled from "styled-components";
 const StyledDialog = styled.dialog`
   border: none;
   background-color: ${({ theme }) => theme.colors.light};
-  box-shadow: 2px 2px 10px 3px ${({ theme }) => theme.colors.primary["600"]};
+  box-shadow: 2px 5px 20px 0px ${({ theme }) => theme.colors.primary["600"]};
   border-radius: 8px;
   &&::backdrop {
-    background-color: ${({ theme }) => theme.colors.primary["200"]};
-    opacity: 0.6;
+    background-color: ${({ theme }) =>
+      theme.colors.primary["200"] + (255 * 0.6).toString(16)};
+    --blur: 2px;
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    border-radius: 10px;
   }
+  position: relative;
 `;
 type DialogProps = {
   opener: ReactElement | undefined;
@@ -79,6 +84,7 @@ const Dialog = forwardRef(
             onClick: openingFunction,
           })}
         <StyledDialog ref={modalRef} id={modalId}>
+          <div className="test"></div>
           {children && children({ closeFunction, submitFunction })}
         </StyledDialog>
       </>

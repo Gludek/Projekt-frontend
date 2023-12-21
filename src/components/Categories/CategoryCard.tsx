@@ -46,6 +46,7 @@ const CategoryBody = styled.div<{ isExpanded: boolean }>`
     max-height: 100%;
     transition: 0.3s ease-in;
   }
+ 
 `;
 type CategoryCardProps = {
   title: string;

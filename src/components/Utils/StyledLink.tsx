@@ -24,7 +24,7 @@ const SLink = styled(Link)<StyledLinkProps>`
   }}
   color: var(--text-color);
   text-decoration: none;
-
+  line-height: 1.3;
   border-radius: 5px;
   ${({ $outlined }) =>
     $outlined &&

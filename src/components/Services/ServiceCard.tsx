@@ -40,8 +40,11 @@ const ServiceFooter = styled.div`
   div {
     display: flex;
     flex-direction: row;
-    width: 60%;
     gap: 10px;
+    @container (max-width: 500px) {
+      flex-direction: column;
+      width: 100%;
+    }
     & > * {
       display: flex;
       justify-content: center;
@@ -51,8 +54,9 @@ const ServiceFooter = styled.div`
   }
 `;
 
-type ServiceProps = {
+export type ServiceProps = {
   service: {
+    category: string;
     name: string;
     description: string;
     price: string;
@@ -77,31 +81,41 @@ const StyledButton = styled.button`
 `;
 function ServiceCard({ service }: ServiceProps) {
   const { currentUser } = useContext(userContext);
+  // @ts-expect-error
+  const isMobile = navigator.userAgentData?.mobile ?? false;
   return (
     <Service>
       <ServiceTitle>
         <h5>{service.name}</h5>
         <span>{service.price} zł</span>
       </ServiceTitle>
-      <ServiceBody>
-        <p>{service.description}</p>
-        <ServiceFooter>
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <StyledButton disabled={!currentUser}>
-              {currentUser
-                ? "Umów wizytę online"
-                : "Zaloguj się, aby umawiać wizyty online"}
-            </StyledButton>
-            <StyledLink to="tel:+48609824011" linkType="button" outlined>
-              Umów się telefonicznie
-            </StyledLink>
-          </div>
-        </ServiceFooter>
-      </ServiceBody>
+      {
+        <ServiceBody>
+          <p>{service.description}</p>
+          <ServiceFooter>
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <StyledButton disabled={!currentUser}>
+                {currentUser
+                  ? "Umów wizytę online"
+                  : "Zaloguj się, aby umawiać wizyty online"}
+              </StyledButton>
+              {isMobile ? (
+                <StyledLink to="tel:+48609824011" linkType="button" outlined>
+                  Umów się telefonicznie
+                </StyledLink>
+              ) : (
+                <StyledLink to="tel:+48609824011" linkType="button" outlined>
+                  Umów się dzwoniąc na numer 609 824 011
+                </StyledLink>
+              )}
+            </div>
+          </ServiceFooter>
+        </ServiceBody>
+      }
     </Service>
   );
 }

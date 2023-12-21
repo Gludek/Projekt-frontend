@@ -11,7 +11,9 @@ import {
 import styled from "styled-components";
 import { Fragment, MouseEventHandler } from "react";
 import chevron from "@/assets/chevron.svg";
-import { ApiClient } from "@/API/apiClient";
+import { ApiClient, queryClient } from "@/API/apiClient";
+import Dialog from "@/components/Modal/Dialog";
+import Button from "@/components/Utils/StyledButton";
 const Body = styled.div`
   display: flex;
   flex-direction: column;
@@ -27,7 +29,6 @@ const TableHead = styled.thead`
   background-color: ${({ theme }) => theme.colors.primary["300"]};
 `;
 const TBody = styled.tbody``;
-const TFooter = styled.tfoot``;
 const TRow = styled.tr`
   background-color: ${({ theme }) => theme.colors.primary["100"]};
   &&:nth-child(even) {
@@ -53,11 +54,23 @@ const PermissionContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 5px;
+  justify-content: space-between;
+  align-items: center;
+  > button {
+    font-size: 1.7rem;
+    line-height: 0.3;
+  }
 `;
-const PermissionChip = styled.span<{
+const Chips = styled.span`
+  display: inline-flex;
+  gap: 5px;
+  flex-wrap: wrap;
+`;
+type PermissionChipProps = {
   key: string | number;
   onClick: (e: MouseEventHandler) => void;
-}>`
+};
+const PermissionChip = styled.span<PermissionChipProps>`
   display: inline-flex;
   align-items: center;
   padding: 5px;
@@ -132,20 +145,42 @@ const columns = [
     id: "permissions",
     cell: (info) => (
       <PermissionContainer>
-        {info.getValue()?.map((v, i) => (
-          <PermissionChip
-            key={v[0] + i}
-            onClick={(e) => {
-              if (v == "user") return;
-              const user = info.row.original;
-              user.permissions = user.permissions?.filter((p) => p !== v);
-              ApiClient.updateUser(user.id, user);
-            }}
-          >
-            {v}
-            {v != "user" && <span>&times;</span>}
-          </PermissionChip>
-        ))}
+        <Chips>
+          {info.getValue()?.map((v, i) => (
+            <PermissionChip
+              key={v + i}
+              onClick={(e) => {
+                if (v == "user") return;
+                const user = info.row.original;
+                user.permissions = user.permissions?.filter((p) => p !== v);
+                ApiClient.updateUser(user.id, user);
+                queryClient.invalidateQueries("users");
+              }}
+            >
+              {v}
+              {v != "user" && <span>&times;</span>}
+            </PermissionChip>
+          ))}
+        </Chips>
+        <Dialog opener={<Button buttonStyle="tertiary">+</Button>}>
+          {(c) => {
+            return (
+              <Fragment>
+                <h1>Uprawnienia użytkownika</h1>
+                <p>
+                  Użytkownik ma uprawnienia:{" "}
+                  {info
+                    .getValue()
+                    ?.map((v) => (v == "user" ? "Użytkownik" : v))
+                    .join(", ")}
+                </p>
+                <p>
+                  <button onClick={c.closeFunction}>OK</button>
+                </p>
+              </Fragment>
+            );
+          }}
+        </Dialog>
       </PermissionContainer>
     ),
     header: () => <span>Uprawnienia</span>,

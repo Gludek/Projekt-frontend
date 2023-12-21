@@ -33,7 +33,7 @@ const SImage = styled.img`
 function ImageCard({ img }: { img: string }) {
   return (
     <Body>
-      <SImage src={img} />
+      <SImage src={img} alt={img} />
     </Body>
   );
 }

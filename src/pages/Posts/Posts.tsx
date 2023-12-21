@@ -43,7 +43,6 @@ function Posts() {
   const firstPost = posts[0];
   const postList = posts.slice(1, posts.length);
   const { currentUser } = useContext(userContext);
-  console.log(posts);
   return (
     <Body>
       <h1>Artykuły</h1>

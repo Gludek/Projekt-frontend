@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ApiClient } from "../apiClient";
 import { User, UserLogin, UserRegister } from "../types/user";
+import { AxiosError } from "axios";
 
 /**
  * Custom hook for getting current user data
@@ -10,9 +11,11 @@ export const useMe = () => {
   const query = useQuery({
     queryKey: ["me"],
     queryFn: () => ApiClient.me(),
+    retry: (fC, error: AxiosError) => {
+      return error?.response?.status === 401 ? false : true;
+    },
   });
-
-  return query.data?.data.data as User;
+  return query;
 };
 
 /**

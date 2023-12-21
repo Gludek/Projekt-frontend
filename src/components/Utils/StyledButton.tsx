@@ -95,9 +95,9 @@ function colorHandler(style: string) {
       `;
     case "tertiary":
       return css`
-        --text-color: ${({ theme }) => theme.colors.primary["800"]};
+        --text-color: ${({ theme }) => theme.colors.secondary["900"]};
         --background-color: transparent;
-        --hover-text-color: ${({ theme }) => theme.colors.primary["500"]};
+        --hover-text-color: ${({ theme }) => theme.colors.secondary["500"]};
       `;
     case "nav":
       return css`

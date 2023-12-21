@@ -107,7 +107,6 @@ function PostCard({
   postId,
   img,
 }: PostCardProps) {
-  console.log(postId);
   return (
     <Body $minified={minified}>
       {img && (

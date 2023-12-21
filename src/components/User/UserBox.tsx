@@ -82,7 +82,7 @@ function UserBox() {
   const [loggedOut, setLoggedOut] = useState(currentUser ? false : false);
   const path = useLocation();
   const navigate = useNavigate();
-
+  console.log(currentUser);
   return (
     <Body
       onMouseLeave={() => setIsOpen(false)}
@@ -92,7 +92,7 @@ function UserBox() {
       {currentUser ? (
         <>
           <UserNameDisplay>
-            <span>{currentUser?.name}</span>
+            <span>{currentUser.name}</span>
             <img src={image} />
           </UserNameDisplay>
           <Menu open={isOpen}>
@@ -121,9 +121,11 @@ function UserBox() {
                         setLoggedOut(true);
                       }
                     })
-                    .catch((e) => console.warn(e));
-                  login(null);
-                  path.pathname.includes("admin") && navigate("/");
+                    .finally(() => {
+                      login(null);
+                      login(null);
+                      path.pathname.includes("admin") && navigate("/");
+                    });
                 }}
               >
                 Logout

@@ -2,6 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { User, UserLogin, UserRegister } from "./types/user";
 import { createContext } from "react";
+import { ServiceProps } from "@/components/Services/ServiceCard";
 
 export const queryClient = new QueryClient();
 export const userContext = createContext<{
@@ -14,7 +15,7 @@ export const axiosInstance = axios.create({
 
 export class ApiClient {
   private static getToken() {
-    return localStorage.getItem("token");
+    return sessionStorage.getItem("token");
   }
   static async getTest() {
     return axiosInstance.get("/test", {}).then((res) => console.log(res));
@@ -40,7 +41,7 @@ export class ApiClient {
         const { data, headers } = await axiosInstance.post("/login", {
           user,
         });
-        localStorage.setItem("token", headers.authorization);
+        sessionStorage.setItem("token", headers.authorization);
         return data;
       },
     });
@@ -48,10 +49,7 @@ export class ApiClient {
   }
 
   static async register(user: UserRegister) {
-    return axiosInstance
-      .post("/signup", { user })
-      .then((res) => res)
-      .catch((err) => err.response);
+    return axiosInstance.post("/signup", { user }).then((res) => res);
   }
 
   static async me() {
@@ -61,8 +59,9 @@ export class ApiClient {
           Authorization: this.getToken(),
         },
       })
-      .then((res) => res)
-      .catch((err) => err.response);
+      .then((res) => {
+        return res.data;
+      });
   }
 
   static async logout() {
@@ -77,6 +76,7 @@ export class ApiClient {
         return data;
       },
     });
+    sessionStorage.removeItem("token");
     return query;
   }
 
@@ -87,16 +87,7 @@ export class ApiClient {
           Authorization: this.getToken(),
         },
       })
-      .then((res) => res.data)
-      .catch((error) => {
-        if (axios.isAxiosError(error)) {
-          console.log("error message: ", error.message);
-          return error.message;
-        } else {
-          console.log("unexpected error: ", error);
-          return "An unexpected error occurred";
-        }
-      });
+      .then((res) => res.data);
   }
   static async getUser(id: number) {
     return axiosInstance
@@ -105,8 +96,7 @@ export class ApiClient {
           Authorization: this.getToken(),
         },
       })
-      .then((res) => res)
-      .catch((err) => err.response);
+      .then((res) => res);
   }
   static async updateUser(id: number, user: User) {
     const userUpdate = { ...user };
@@ -136,8 +126,7 @@ export class ApiClient {
       .then((res) => {
         console.log(res, "res");
         return res;
-      })
-      .catch((err) => err.response);
+      });
   }
   static async deleteUser(id: number) {
     return axiosInstance.delete(`/users/${id}`, {
@@ -155,7 +144,7 @@ export class ApiClient {
     });
   }
   static async getServices() {
-    return axiosInstance.get(`/services`, {
+    return axiosInstance.get<ServiceProps["service"][]>(`/services`, {
       headers: {
         Authorization: this.getToken(),
       },

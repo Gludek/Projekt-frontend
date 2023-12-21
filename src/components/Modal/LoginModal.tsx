@@ -16,7 +16,6 @@ import { useContext, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 const Body = styled.div`
-  min-width: 400px;
   max-width: 60vw;
   display: flex;
   flex-direction: column;
@@ -31,9 +30,11 @@ const Form = styled.form`
   color: ${({ theme }) => theme.colors.primary["700"]};
 `;
 const FormRow = styled.div`
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   justify-content: space-between;
+  align-items: center;
+  gap: 10px;
   width: 100%;
 `;
 const Confirmed = styled.div<{ confirmed?: boolean }>`
@@ -100,8 +101,9 @@ function LoginForm({
       .then((res) => {
         if (res.code == 200) {
           return ApiClient.me().then((res) => {
+            console.log(res);
             if (res.status == 200) {
-              loginFn(res.data.data);
+              loginFn(res.data);
               return true;
             }
           });

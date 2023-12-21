@@ -7,6 +7,7 @@ import logo from "../../assets/Sekret Piękna.svg";
 import StyledLink from "../Utils/StyledLink";
 import UserBox from "../User/UserBox";
 import { User } from "@/API/types/user";
+import { useMe } from "@/API/hooks/UserHooks";
 const Body = styled.div`
   width: 100%;
   display: flex;
@@ -24,7 +25,6 @@ const Nav = styled.nav`
   height: 50px;
   max-height: 50px;
   justify-content: space-between;
-  align-items: flex-start;
   box-shadow: 0px 4px 4px 0px #cacae1;
 `;
 const Main = styled.main`
@@ -41,28 +41,35 @@ const LogoContainer = styled.div`
   flex: 1;
 `;
 const Logo = styled.img`
-  height: calc(100% - 10px);
+  height: 100%;
   padding: 5px;
   object-fit: cover;
   object-position: center;
 `;
 const NavLinkWrapper = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  height: 100%;
   flex: 2;
+
+  @media screen and (width < 500px) {
+    flex-direction: column;
+    background-color: inherit;
+    height: min-content;
+    gap: 5px;
+  }
 `;
 const NavLinkContainer = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100%;
   flex: 1;
+  @media screen and (width < 500px) {
+    flex-direction: column;
+  }
 `;
 function TopBar() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const login = useCallback((res: User | null) => {
+    // if (res?.jti) sessionStorage.setItem("token", res.jti);
+    if (!res) sessionStorage.removeItem("token");
     setCurrentUser(res);
   }, []);
   const contextValue = useMemo(
@@ -72,6 +79,11 @@ function TopBar() {
     }),
     [currentUser, login]
   );
+  const u = useMe();
+  if (u.isSuccess && !currentUser) {
+    console.log(u.data, "current user");
+    setCurrentUser(u.data);
+  }
   return (
     <userContext.Provider value={contextValue}>
       <Body>
@@ -88,10 +100,9 @@ function TopBar() {
                 Usługi
               </StyledLink>
             </NavLinkContainer>
-            <UserBox />
+            {u.isFetched && <UserBox />}
           </NavLinkWrapper>
         </Nav>
-
         <Main>
           <Outlet />
         </Main>
